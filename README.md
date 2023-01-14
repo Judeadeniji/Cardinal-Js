@@ -1,8 +1,4 @@
-# Cardinal-Js
-
-Cardinal
-
-Cardinal
+Cardinal-Js
 ========
 
 Cardinal is a Node.js class that allows you to containerize your Node.js programs, monitor their performance, and handle errors.
