@@ -1,8 +1,16 @@
-const Cardinal = require('./lib/cardinal');
+const Cardinal = require('./lib/cardinal2');
+const Cssify = require('./lib/cssify');
 const cardinal = new Cardinal();
 const os = require('os');
 const http = require('http');
 const uptime = os.uptime();
+
+// Declare the styles Object
+const styles = {
+  body: {
+    fontFamily: 'Arial, verdana'
+  }
+}
 
 // Function to get memory usage
 const getMemoryUsage = () => {
@@ -32,11 +40,13 @@ const serverFunc = (port) => {
                res.write(`<p>Memory usage: ${getMemoryUsage()}</p>`);
         res.write(`<p>Server Uptime: ${getUptime()}</p>`);
         res.write(`<p>Server status: Running</p>`);
+        res.write(`<style>${Cssify(styles) }</style>`);
         res.end();
     });
     server.listen(port, () => {
         console.log(`Server running on port ${port}`);
     });
+    
 };
 
 cardinal.add("server", serverFunc, [3000]);
