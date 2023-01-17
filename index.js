@@ -1,4 +1,4 @@
-const Cardinal = require('./lib/cardinal2');
+const Cardinal = require('./lib/cardinal');
 const Cssify = require('./lib/cssify');
 const cardinal = new Cardinal();
 const os = require('os');

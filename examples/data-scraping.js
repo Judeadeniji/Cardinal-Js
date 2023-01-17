@@ -7,10 +7,8 @@ let cardinal = new Cardinal();
 
 // Define the target servers for the load balancer
 let options = {
-    port: 3001,
-    targets: [
-        { host: 'localhost', port: 3000 },
-    ]
+    ports: [3001, 3002, 3003],
+    targets: ['http://localhost:3000', 'http://localhost:3002', 'http://localhost:3003'],
 };
 
 // Start the load balancer

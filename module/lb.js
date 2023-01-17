@@ -1,35 +1,37 @@
 const http = require('http');
+const httpProxy = require('http-proxy');
 
 class LoadBalancer {
     constructor(options) {
+        this.proxy = httpProxy.createProxyServer();
         this.options = options;
         this.targets = options.targets;
-        this.currentTargetIndex = 0;
     }
 
     start() {
-        http.createServer((req, res) => {
-            this.handleRequest(req, res);
-        }).listen(this.options.port);
-    }
-
-    handleRequest(req, res) {
-        let target = this.targets[this.currentTargetIndex];
-        let proxy = http.request({
-            host: target.host,
-            port: target.port,
-            path: req.url,
-            method: req.method
-        }, proxyRes => {
-            res.writeHead(proxyRes.statusCode, proxyRes.headers);
-            proxyRes.pipe(res);
-        });
-
-        req.pipe(proxy);
-
-        // Increment the current target index for the next request
-        this.currentTargetIndex = (this.currentTargetIndex + 1) % this.targets.length;
+        for (let port of this.options.ports) {
+            http.createServer((req, res) => {
+                console.log(`Port ${port} Received request: ${req.url}`);
+                let target;
+                // match the request URL with a specific target
+                for (let i = 0; i < this.targets.length; i++) {
+                    if (req.url.startsWith(this.targets[i].path)) {
+                        target = this.targets[i].target;
+                        break;
+                    }
+                }
+                if (target) {
+                    this.proxy.web(req, res, { target: target });
+                } else {
+                    res.writeHead(404);
+                    res.end();
+                }
+            }).listen(port);
+            console.log(`Load balancer listening on port ${port}`);
+        }
     }
 }
+
+
 
 module.exports = LoadBalancer;
