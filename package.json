@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/Judeadeniji/Cardinal-Js/issues"
   },
-  "homepage": "https://github.com/Judeadeniji/Cardinal-Js#readme"
+  "homepage": "https://github.com/Judeadeniji/Cardinal-Js#readme",
+  "dependencies": {
+    "cheerio": "1.0.0-rc.12",
+    "http-proxy": "^1.18.1",
+    "http-proxy-middleware": "^2.0.6"
+  }
 }

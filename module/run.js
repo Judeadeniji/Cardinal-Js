@@ -18,6 +18,7 @@ const run = (parent, name) => {
             if (monitor.resourceUsage > parent.maxAllowedMemory) {
                 parent.alerts.add(`Program "${name}" exceeded the maximum allowed memory usage threshold`);
             }
+            
             return programResult;
         } catch (err) {
             monitor.status = "error";
