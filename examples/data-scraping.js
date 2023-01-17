@@ -33,8 +33,9 @@ cardinal.add("scraper", (url) => {
     });
 }, ['http://www.google.com/search?q=websites+that+allow+data+scraping']);
 
-// Create the HTTP server
-http.createServer((req, res) => {
+// Create the HTTP server and Containerize it with Cardinal
+const serverFunc = (port) => {
+  http.createServer((req, res) => {
     let query = url.parse(req.url, true).query;
     let targetUrl = query.url;
     cardinal.run("scraper", [targetUrl])
@@ -49,5 +50,9 @@ http.createServer((req, res) => {
             res.write("An error occurred while scraping the website.");
             res.end();
         });
-}).listen(3000);
-console.log("Server running at http://localhost:3000/");
+}).listen(port);
+console.log(`Server running at http://localhost:${port}/`);
+}
+
+cardinal.add("server", serverFunc, [3000]);
+cardinal.run("server");
