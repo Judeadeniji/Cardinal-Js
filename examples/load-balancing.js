@@ -3,7 +3,7 @@ const Cardinal = require('../lib/cardinal');
 const cardinal = new Cardinal();
 // Configuration object
 const config = {
-    backendServer: {
+    proxyServer: {
         port: 8000,
         count: 5
     }
@@ -11,7 +11,13 @@ const config = {
 
 const loadBalancer = cardinal.useLoadBalancer(config);
 
-const app = express();
+const server = () => {
+  return express();
+};
+
+cardinal.add("server", server, []);
+
+const app = cardinal.run("server");
 
 app.get('/', (req, res) => {
     res.write("home page");

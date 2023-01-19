@@ -19,13 +19,13 @@
   },
   "homepage": "https://github.com/Judeadeniji/Cardinal-Js#readme",
   "dependencies": {
-    "cheerio": "1.0.0-rc.12",
-    "express": "^4.18.2",
     "http-proxy": "^1.18.1",
     "http-proxy-middleware": "^2.0.6",
     "socket.io": "^4.5.4"
   },
   "devDependencies": {
+    "cheerio": "1.0.0-rc.12",
+    "express": "^4.18.2",
     "axios": "^1.2.3"
   }
 }
