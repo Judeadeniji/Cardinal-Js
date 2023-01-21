@@ -4,7 +4,7 @@ const axios = require('axios');
 const requests = 100;
 
 // URL of the load balancer
-const urls = ['http://localhost:8080/', 'http://localhost:8080/about'];
+const urls = ['http://localhost:3000/', 'http://localhost:3000/'];
 
 // send requests
 
