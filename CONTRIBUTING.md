@@ -21,6 +21,17 @@ Guidelines
 *   Ensure that the test suite passes before submitting your pull request
 *   Include documentation for any new features or changes to existing features
 
+Submitting Pull Requests
+------------------------
+
+Before submitting a pull request, please make sure that you have read and understood the following guidelines:
+
+*   Fork the repository and create a new branch for your changes
+*   Ensure that your code follows the existing code style and structure
+*   Add and update tests as necessary
+*   Make sure that your code passes all tests and linting checks
+*   Include a detailed and clear description of the changes you made in the pull request
+
 Community
 ---------
 
