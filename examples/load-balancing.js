@@ -1,38 +1,86 @@
-const express = require("express");
-const Cardinal = require("../lib/cardinal");
+const Cardinal = require("../index.js");
+const Cssify = require("../lib/cssify");
 const cardinal = new Cardinal();
+const os = require("os");
+const http = require("http");
+const uptime = os.uptime();
+
+// Declare the styles Object
+const styles = {
+  body: {
+    "font-family": "Arial",
+    "background-color": "#eee",
+    display: "flex",
+    "align-items": "center",
+    "justify-content": "space-around",
+    height: "100vh",
+    '.card': {
+      "background-color": "white",
+      "border-radius": "10px",
+      padding: "9px 15px",
+      height: "80vw",
+      width: "80vw",
+      display: "grid",
+      "place-content": "center"
+    }
+  },
+};
+
 // Configuration object
 const config = {
   loadServer: {
     port: 8000,
-    count: 5,
+    count: 3,
   },
 };
 
-const loadBalancer = cardinal.loadBalancer;
-
-const server = () => {
-  return express();
+// Function to get memory usage
+const getMemoryUsage = () => {
+  const used = process.memoryUsage().heapUsed / 1024 / 1024;
+  const total = os.totalmem() / 1024 / 1024;
+  return `${Math.round(used * 100) / 100}MB / ${
+    Math.round(total * 100) / 100
+  }MB`;
 };
 
-cardinal.add("server", server, []);
+const getUptime = () => {
+  const seconds = Math.floor(uptime % 60);
+  const minutes = Math.floor((uptime / 60) % 60);
+  const hours = Math.floor((uptime / (60 * 60)) % 24);
+  const days = Math.floor(uptime / (60 * 60 * 24));
+  return `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+};
 
-const app = cardinal.run("server");
+const loadBalancer = cardinal.loadBalancer;
+// Define the request handler
 
-const requestHandler = (req, res) => {
-  res.write(`You're now at ${req.url}`);
+var reqHandle = (req, res) => {
+  res.writeHead(200, { "Content-Type": "text/html" });
+  res.write(`<div class="card">`);
+  res.write(`<h1>Server Details</h1>`);
+  res.write(`<p>OS Type: ${os.type()}</p>`);
+  res.write(`<p>OS Platform: ${os.platform()}</p>`);
+  res.write(`<p>OS Arch: ${os.arch()}</p>`);
+  res.write(`<p>OS Release: ${os.release()}</p>`);
+  res.write(`<p>CPUs: ${os.cpus().length}</p>`);
+  res.write(`<p>Memory usage: ${getMemoryUsage()}</p>`);
+  res.write(`<p>Server Uptime: ${getUptime()}</p>`);
+  res.write(`<p>Server status: Running</p>`);
+  res.write(`</div>`);
+  res.write(`<style>${Cssify(styles)}</style>`);
   res.end();
 };
 
-app.get("/", (req, res) => {
-  loadBalancer.balance(req, res);
-});
+// HTTP server function
+const serverFunc = (port) => {
+  const server = http.createServer((req, res) => {
+    loadBalancer.balance(req, res);
+  });
+  server.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+    loadBalancer.start(config, reqHandle);
+  });
+};
 
-app.get("/about", (req, res) => {
-  loadBalancer.balance(req, res);
-});
-
-app.listen(8080, () => {
-  console.log("App listening on port 8080");
-  loadBalancer.start(config, requestHandler);
-});
+cardinal.add("server", serverFunc, [3000]);
+console.log(cardinal.run("server"));
